@@ -30,7 +30,7 @@ public class App
             binaryLot = new int[width][height]; // initiate 2d binary array
             int[] lotDim = {0,0}; // initiate second coordinates of first point 
             ArrayList<Lot> lots_List = new ArrayList<Lot>();            
-            
+            ArrayList<ArrayList<Integer>> entrances = new ArrayList<>();
             for(y=0;y<height;y++)
             {
                 for(x=0;x<width;x++)
@@ -49,6 +49,8 @@ public class App
             }
 
             y = 0;
+
+            System.out.println("\nEmpty Parking Spot Locations (Coordinates x,y in pixels):\n");
 
             /////////////////////////////////////////////////////////////////////////////////////
             ///////////////////             VERTICAL LOT CHECK             //////////////////////
@@ -107,7 +109,7 @@ public class App
                         {
                             if (lotAddedInARow) {
                                 y += lotY;
-                                System.out.println(" + lotY = " + y);
+                                //System.out.println(" + lotY = " + y);
                             }
                             break;
                         }
@@ -116,7 +118,59 @@ public class App
                 }
                 y++; 
             }
-
+            System.out.println("\n\nEntrances: ");
+            for(x = 0;x<width;x++){
+                if(binaryLot[x][0] == 0){
+                    ArrayList<Integer> entrance = new ArrayList<>();
+                    entrance.add(x);entrance.add(0);entrances.add(entrance);
+                    entrance = new ArrayList<>();
+                    System.out.print(x+" 0 |");
+                    while(binaryLot[x][0] == 0){
+                        x++;
+                }
+                entrance.add(x);entrance.add(0);entrances.add(entrance);
+                System.out.print(x+" 0");
+                }
+            }
+            for(x = 0;x<width;x++){
+                if(binaryLot[x][height-1] == 0){
+                    ArrayList<Integer> entrance = new ArrayList<>();
+                    entrance.add(x);entrance.add(0);entrances.add(entrance);
+                    entrance = new ArrayList<>();
+                    System.out.print(x+" "+height+" |");
+                    while(binaryLot[x][height] == 0){
+                        x++;
+                }
+                entrance.add(x);entrance.add(height);entrances.add(entrance);
+                System.out.print(x+" "+height);
+                }
+            }
+            for(y = 0;y<height;y++){
+                if(binaryLot[0][y] == 0){
+                    ArrayList<Integer> entrance = new ArrayList<>();
+                    entrance.add(0);entrance.add(y);entrances.add(entrance);
+                    entrance = new ArrayList<>();
+                    System.out.print("0 "+y+" |");
+                    while(binaryLot[0][y] == 0){
+                        y++;
+                }
+                entrance.add(0);entrance.add(y);entrances.add(entrance);
+                System.out.print("0 "+y);
+                }
+            }
+            for(y = 0;y<height;y++){
+                if(binaryLot[width-1][y] == 0){
+                    ArrayList<Integer> entrance = new ArrayList<>();
+                    entrance.add(height);entrance.add(y);entrances.add(entrance);
+                    entrance = new ArrayList<>();
+                    System.out.print(width+" "+y+" |");
+                    while(binaryLot[height][y] == 0){
+                        y++;
+                }
+                entrance.add(width);entrance.add(y);entrances.add(entrance);
+                System.out.print(width+" "+y);
+                }
+            }
             System.out.println("\nTOTAL PARKING LOTS: " + lotCount);
 
             /////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +211,7 @@ public class App
                 }
                 x++; 
             }*/
+
 	   }
 
     	catch(Exception e)
