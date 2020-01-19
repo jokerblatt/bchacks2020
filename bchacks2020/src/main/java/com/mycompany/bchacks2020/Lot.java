@@ -6,6 +6,11 @@ public class Lot {
 	static int count;
 	private int[][] daCoo = new int[4][2];
 	
+        public Lot()
+        {
+            System.out.println("Hello");
+        }
+            
 	public Lot(int x, int y, int width, int height){
 		count++;
 		setTo(0,0,x);
