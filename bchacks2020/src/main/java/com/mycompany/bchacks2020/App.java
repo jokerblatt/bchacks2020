@@ -3,11 +3,12 @@ import java.io.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class App
 {
-    public int LotX; // lot dimensions
-    public int LotY; // lot dimensions
+    public static int LotX; // lot dimensions
+    public static int LotY; // lot dimensions
     public static void main(String args[])
     {
         try
@@ -20,7 +21,9 @@ public class App
             int x=0; // initiate iterator 
             boolean done = false; // initiate done
             int[][] binaryLot = new int[height][width]; // initiate 2d binary array
-            int[] secondCoord; // initiate second coordinates of first point 
+            int[] lotDim; // initiate second coordinates of first point 
+            ArrayList<Lot> lots_List = new ArrayList<Lots>();
+            
             for(y=0;y<height;y++)
             {
                 for(x=0;x<width;x++)
@@ -44,9 +47,20 @@ public class App
                     
                     if(binaryLot[y][x]==0 && !done) 
                     {
-                        getDim(x,y); 
+                        lotDim = getDim(x,y); 
                     }
-                    
+                    elseif((x+1+lotDim[0])==1)
+                     {
+                        int currentX = x;
+                        int currentY = y;
+                        Lot lot = new Lot(currentX,currentY,LotX,LotY);
+                        lots_List.add(lot);
+                        x = x+LotX+1;
+                     }
+                     else
+                     {
+                        y = y+LotY+1;
+                     }
                 }
             }
 	}
