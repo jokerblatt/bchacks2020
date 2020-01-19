@@ -9,6 +9,7 @@ public class App
 {
     public static int LotX; // lot dimensions
     public static int LotY; // lot dimensions
+    public static int[][] binaryLot;
     public static void main(String args[])
     {
         try
@@ -20,9 +21,10 @@ public class App
             int y=0; // initiate iterator
             int x=0; // initiate iterator 
             boolean done = false; // initiate done
-            int[][] binaryLot = new int[height][width]; // initiate 2d binary array
-            int[] lotDim; // initiate second coordinates of first point 
-            ArrayList<Lot> lots_List = new ArrayList<Lots>();
+            binaryLot = new int[height][width]; // initiate 2d binary array
+            int[] lotDim = {0,0}; // initiate second coordinates of first point 
+            System.out.println("Hello");
+            ArrayList<Lot> lots_List = new ArrayList<Lot>();
             
             for(y=0;y<height;y++)
             {
@@ -48,19 +50,22 @@ public class App
                     if(binaryLot[y][x]==0 && !done) 
                     {
                         lotDim = getDim(x,y); 
+                        done = true;
                     }
-                    elseif((x+1+lotDim[0])==1)
-                     {
+                    else if((x+1+lotDim[0])==1)
+                    {
                         int currentX = x;
                         int currentY = y;
                         Lot lot = new Lot(currentX,currentY,LotX,LotY);
                         lots_List.add(lot);
                         x = x+LotX+1;
-                     }
-                     else
-                     {
+                        System.out.println(lots_List.toArray().length);
+                        
+                    }
+                    else
+                    {
                         y = y+LotY+1;
-                     }
+                    }
                 }
             }
 	}
@@ -69,5 +74,48 @@ public class App
             e.printStackTrace();
 	}
     }
+    
+    public static int[] getDim(int x, int y)
+    {
+        int[] firstCoordinate = {0,0}; // creates new 2-element arrays for every coordinate
+        int[] secondCoordinate = {0,0}; // creates new 2-element arrays for every coordinate
+        int[] thirdCoordinate = {0,0}; // creates new 2-element arrays for every coordinate
+        int[] fourthCoordinate = {0,0}; // creates new 2-element arrays for every coordinate
+         
+
+        // Store x- and y- values in the first coordinate
+        firstCoordinate[0] = x - 1;
+        firstCoordinate[1] = y;
+
+        while (binaryLot[x][y]==0) // while the pixel is white (0)
+                x++; // keep iterating over each pixel in the ROW
+
+        // Store x- and y- values in the second coordinate
+        secondCoordinate[0] = x;
+        secondCoordinate[1] = y;
+
+        while (binaryLot[x][y]==1)
+        {
+             y++; // keep iterating over each pixel in the COLUMN
+        }
+            
+               
+
+        // Store x- and y- values in the second coordinate
+        thirdCoordinate[0] = x;
+        thirdCoordinate[1] = y - 1;
+
+        // --- At this point, we know the dimension of one parking lot ---
+        LotX = secondCoordinate[0] - firstCoordinate[0]; // X2 - X1; delta X
+        LotY = thirdCoordinate[1] - secondCoordinate[1]; // Y3 - Y2; delta Y
+
+
+        int[] toReturn = {LotX,LotY};
+
+        return toReturn;
+
+
+    }
+        
     
 }
