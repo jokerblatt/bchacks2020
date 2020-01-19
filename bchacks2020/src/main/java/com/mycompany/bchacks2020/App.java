@@ -1,3 +1,5 @@
+package com.mycompany.bchacks2020;
+
 
 import java.io.*;
 import java.awt.*;
@@ -12,15 +14,11 @@ public class App
     public static int[][] binaryLot;
     public static int width, height;
     public static int divider;
-    public static boolean lotAddedInAColumn;
-    public static boolean lotAddedInARow;
-    public static int lotCount;
-    
     public static void main(String args[])
     {
         try
-        {
-            File parking_lot = new File("parking_lot2.png");
+	   {
+            File parking_lot = new File("C:/Users/Ryan Lam/Desktop/hackathon/parking_lot2.png");
             BufferedImage bi = ImageIO.read(parking_lot);
             width = bi.getWidth(); // image width
             height = bi.getHeight(); //image height
@@ -29,7 +27,8 @@ public class App
             boolean done = false; // initiate done
             binaryLot = new int[width][height]; // initiate 2d binary array
             int[] lotDim = {0,0}; // initiate second coordinates of first point 
-            ArrayList<Lot> lots_List = new ArrayList<Lot>();            
+            ArrayList<Lot> lots_List = new ArrayList<Lot>();         
+            int divider=0;
             
             for(y=0;y<height;y++)
             {
@@ -47,11 +46,9 @@ public class App
                     }
                 }
             }
-
-            y = 0;
+            y=0;
 
             /////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////             VERTICAL LOT CHECK             //////////////////////
             /////////////////////////////////////////////////////////////////////////////////////
 
             int firstX = 0;
@@ -76,86 +73,74 @@ public class App
             
 
             while(y < height)
-            {   
-                lotAddedInARow = false;
+            {
                 for(x = firstX ; x < width ; x++)
                 {
                     if (binaryLot[x][y] == 0 && !done)
                     {
                         lotDim = getDim(x,y); 
                         done = true;
+                        lotX = lotDim[0];
+                        lotY = lotDim[1];
                     }
 
-                    if ((y + lotDim[1] < height) && (x + lotDim[0] < width) && binaryLot[x + lotDim[0]][y] == 1 && binaryLot[x-1][y] != 0) // Check doesn't jump
+                    if ((y + lotY < height) && (x + lotX < width) && binaryLot[x + lotX][y] == 1 && binaryLot[x-1][y] != 0) // if jump and is black
                     {
-                        int lotX = lotDim[0];
-                        int lotY = lotDim[1];
-
-                        if ((binaryLot[x][y - 1] != 0) || (binaryLot[x][y + lotDim[1]] != 0)) // if the bottom is a 1
+                        if((binaryLot[x+1][y+lotY+1]==0 && binaryLot[x+1][y-2]==0)) // if jump and is black, and if top and bottom are blank
                         {
-                            Lot lot = new Lot(x + 1, y, lotX, lotY);
-                            lotAddedInARow = true;
-                            System.out.println(lot.count + ": VERTICAL | " + x + ", " + y);
-                            lotCount = lot.count;
+                            x+=lotX;
+                            if(x+lotX+1 > width) // if top and bottom are blank and need to jump vertically down
+                            {
+                                boolean lotOnLevel = false;
+                                        int z = lots_List.size()-1;
+                                        int[][] check = lots_List.get(z).getDaCoo();//only get the latest lot in the lot list
+                                        if(y==check[0][1]) // if top and bottom are blank and there is lot on same level, jump y+=lotY
+                                        {
+                                            y+=lotY+1;
+                                            x = getNextZero(0,y);
+                                            lotOnLevel=true;
+                                        }
+                                       if(lotOnLevel==false) // if top and bottom are blank and there is no lot on same level, jump y++ 
+                                        {
+                                            y++;
+                                            x = getNextZero(0,y);
+                                        }
+                                    
+                               
+                            }
+                            else // jump and is black, top and bottom are blank, but not at end, jump to next black and get next zero
+                            {
+                                x = getNextZero(x,y);
+                            }
+                          
                         }
+                     else // if jump and is black, top and bottom are blank, then it must be a lot
+                     {
+                        Lot lot = new Lot(x, y, lotX, lotY);
+                        lots_List.add(lot);
+                        System.out.println(lot.count + ": " + x + ", " + y);
                         x += lotX; // JUMP
-
-                        if(x+lotX+1 > width) {
-                            if (lotAddedInARow)
-                                y += lotY + 1;
-                            break;
-                        }
-                        x = getNextZero_verticalCheck(x, y);
-                    }
-                }
-                y++; 
-            }
-
-            System.out.println("\nTOTAL PARKING LOTS: " + lotCount);
-
-            /////////////////////////////////////////////////////////////////////////////////////
-            /////////////////             HORIZONTAL LOT CHECK               ////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////
-            /*
-            while(x < width)
-            {   
-                lotAddedInAColumn = false;
-                for(y = firstY ; y < height ; y++)
-                {
-                    if (binaryLot[x][y] == 0 && !done)
-                    {
-                        lotDim = getDim(x,y); 
-                        done = true;
-                    }
-
-                    if ((y + lotDim[0] < height) && (x + lotDim[1] < width) && binaryLot[x][y + lotDim[0]] == 1 && binaryLot[x][y - 1] != 0) // Check doesn't jump
-                    {
-                        int lotX = lotDim[1]; // flipped from lotDim in vertical check
-                        int lotY = lotDim[0];
-
-                        if ((binaryLot[x - 1][y] != 0) || (binaryLot[x + lotDim[1]][y] != 0)) // if the bottom is a 1
+                        if(x+lotX+1 > width) 
                         {
-                            Lot lot = new Lot(x, y + 1, lotX, lotY);
-                            lotAddedInAColumn = true;
-                            System.out.println(lot.count + ": HORIZONTAL | " + x + ", " + y);
+                            y += lotY + 1;
+                            x=getNextZero(0,y);
                         }
-                        y += lotY; // JUMP Vertically downwards
-
-                        if(y+lotY+1 > height) {
-                            if (lotAddedInAColumn)
-                                x += lotX + 1;
-                            break;
-                        }
-                        y = getNextZero_horizontalCheck(x, y);
+                            x = getNextZero(x, y);
+                     }
+                     
+                    }
+                    else if(x+lotX+1 >= width) // if jump and is not black, (ie blank row) and at end, jump one row down
+                    {
+                        x=getNextZero(0,y);
+                        break;
                     }
                 }
-                x++; 
-            }*/
-	   }
-
+                ++y; 
+            }
+         }
     	catch(Exception e)
     	{
-            e.printStackTrace();
+                e.printStackTrace();
     	}
     }
     
@@ -193,12 +178,12 @@ public class App
 
         System.out.println("LotX: " + lotX + " | LotY: " + lotY);
 
-        int[] toReturn = {lotX, lotY, divider};
+        int[] toReturn = {lotX, lotY};
 
         return toReturn;
     } 
 
-    public static int getNextZero_verticalCheck(int x, int y) 
+    public static int getNextZero(int x, int y) 
     {   
         boolean foundTheZero = false;
 
@@ -209,18 +194,5 @@ public class App
             }
         }
         return width - 1;
-    } 
-
-    public static int getNextZero_horizontalCheck(int x, int y) 
-    {   
-        boolean foundTheZero = false;
-
-        for (int j = y ; j < height && !foundTheZero ; j++) {
-            if (binaryLot[x][j] == 0) {
-                foundTheZero = true;
-                return j - 1;
-            }
-        }
-        return height - 1;
-    }   
+    }  
 }
