@@ -20,7 +20,7 @@ public class App
     {
         try
         {
-            File parking_lot = new File("parking_lotUBC2.png");
+            File parking_lot = new File("parking_lotUBC.png");
             BufferedImage bi = ImageIO.read(parking_lot);
             width = bi.getWidth(); // image width
             height = bi.getHeight(); //image height
@@ -70,10 +70,7 @@ public class App
                 }
             }
 
-            y = firstY;
-
-            System.out.println("first " + firstX + ", " + firstY);
-            
+            y = firstY;            
 
             while(y < height)
             {   
@@ -183,8 +180,6 @@ public class App
         secondCoordinate[0] = x - 1;
         secondCoordinate[1] = y;
 
-        System.out.println("sec coo: " + x + ", " + y);
-
        // y++;
         while (y < height && binaryLot[x][y]==1)
         {
@@ -200,7 +195,7 @@ public class App
         lotX = secondCoordinate[0] - firstCoordinate[0]; // X2 - X1; delta X
         lotY = thirdCoordinate[1] - secondCoordinate[1]; // Y3 - Y2; delta Y
 
-        System.out.println("LotX: " + lotX + " | LotY: " + lotY);
+        System.out.println("\n\n");
 
         int[] toReturn = {lotX, lotY, divider};
 
